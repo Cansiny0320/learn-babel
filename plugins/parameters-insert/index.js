@@ -3,22 +3,12 @@ const parser = require("@babel/parser")
 
 const insertParametersPlugin = require("./plugin")
 
-const sourceCode = `
-    console.log(1);
+const fs = require("fs")
+const path = require("path")
 
-    function func() {
-        console.info(2);
-    }
-
-    export default class Clazz {
-        say() {
-            console.debug(3);
-        }
-        render() {
-            return <div>{console.error(4)}</div>
-        }
-    }
-`
+const sourceCode = fs.readFileSync(path.join(__dirname, "./sourceCode.js"), {
+  encoding: "utf-8",
+})
 
 const ast = parser.parse(sourceCode, {
   sourceType: "unambiguous",
@@ -27,6 +17,7 @@ const ast = parser.parse(sourceCode, {
 
 const { code } = transformFromAstSync(ast, sourceCode, {
   plugins: [insertParametersPlugin],
+  filename: "sourceCode.js",
 })
 
 console.log(code)
